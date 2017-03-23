@@ -1,0 +1,1 @@
+window.onload=function(){for(var o=document.getElementsByTagName("a"),n=0;n<o.length;n++)o[n].index=n,o[n].onmouseover=function(){this.style.boxShadow="5px 5px 10px 5px #999"},o[n].onmouseout=function(){for(var n=0;n<o.length;n++)o[n].style.boxShadow="0 0 0 #ccc"}};

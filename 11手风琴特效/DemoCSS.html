@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        ul {
+            list-style: none
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 1150px;
+            height: 400px;
+            margin: 50px auto;
+            border: 1px solid red;
+            overflow: hidden;
+        }
+
+        div li {
+            width: 240px;
+            height: 400px;
+            float: left;
+        }
+
+        div ul {
+            width: 1300px;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script>
+    /**
+     * 大纲
+     * 先动态的给lis添加图片
+     * 给没一个li注册鼠标悬停事件
+     * 当鼠标移动到这个里时 其他li的width渐渐地变为100 自己的width变为800
+     * 鼠标离开再让每一个li的width变为240
+     *
+     */
+    var box = document.getElementById("box");
+    var ul = box.children[0];
+    var lis = ul.children;
+    for (var i = 0; i < lis.length; i++) {
+        lis[i].style.backgroundImage = "url(images/" + (i + 1) + ".jpg)";//动态给li标签添加图片
+        lis[i].onmouseover = function () {//注册鼠标点击事件
+            for (var i = 0; i < lis.length; i++) {
+                animate(lis[i], {"width": 100});
+//                干掉所有人
+            }
+            animate(this, {"width": 800});
+//            留下我自己
+        };
+    }
+    box.onmouseout = function () {//当鼠标离开盒子时
+        for (var i = 0; i < lis.length; i++) {
+            animate(lis[i], {"width": 240});//设置大小回到240
+        }
+    };
+
+    function animate(obj, json) {
+        //属性名：属性值 对应 k:json[k]
+        clearInterval(obj.timer);
+        obj.timer = setInterval(function () {
+            var flag = true;
+            for (var k in json) {
+                //获取到的值是字符串 有单位
+                var leader = parseInt(getstyle(obj, k));
+                var step = (json[k] - leader) / 10;
+                step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                leader = leader + step;
+                obj.style[k] = leader + "px";
+                if (leader != json[k]) {
+                    flag = false;
+                }
+            }
+            if (flag) {
+                clearInterval(obj.timer);
+            }
+        }, 15)
+
+    }
+    function getstyle(obj, attributes) {
+        // getComputedStyle用来获取元素的css样式的值 只能获取不能写入
+        // 两个参数 第一个参数是元素 第二个参数是伪类 如果没有伪类那么就写成null
+        if (window.getComputedStyle) {
+            return window.getComputedStyle(obj, null)[attributes];
+        } else {
+            return obj.currentStyle[attributes];
+        }
+    }
+</script>
+</body>
+</html>

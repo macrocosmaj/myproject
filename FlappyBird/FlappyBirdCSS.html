@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #game {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #000;
+            background: url(images/sky.png);
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        #game .pipeD {
+            background: url(images/pipe1.png) top center;
+            position: absolute;
+        }
+
+        #game .pipeU {
+            background: url(images/pipe2.png) bottom center;
+            position: absolute;
+        }
+
+        #bird {
+            width: 34px;
+            height: 25px;
+            /*border-radius: 10px;*/
+            /*background-color: red;*/
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            background: url(images/birds.png) -8px -10px no-repeat;
+        }
+
+    </style>
+</head>
+<body>
+<div id="game">
+    <div id="bird"></div>
+</div>
+<script>
+    var birdElem = document.getElementById("bird");
+    var game = document.getElementById("game");
+    var gameOver = false;
+    var g = 1;//重力加速度
+    //1.寻找对象
+    var bird = {
+        Entity: birdElem,//小鸟对象在页面上的实体
+        x: birdElem.offsetLeft,//水平位置
+        y: birdElem.offsetTop,//竖直位置
+        speedX: -5,//水平速度
+        speedY: 0//竖直速度
+    };
+    var sky = {
+        x: 0//水平位置
+    };
+    //移动背景
+    setInterval(function () {
+        if (!gameOver) {
+            // 动画公式 leader = leader+step
+            sky.x = sky.x - bird.speedX;//因为背景是往左走 所以是减去step
+            game.style.backgroundPositionX = sky.x + "px";
+            //一定要加单位 会出现无穷无尽的效果是因为背景平铺
+            bird.speedY = bird.speedY + g;
+            var step = bird.speedY;
+            bird.y = bird.y + step;
+            if (bird.y > game.offsetHeight - bird.Entity.offsetHeight) {
+                bird.y = game.offsetHeight - bird.Entity.offsetHeight;//当小鸟的头部掉到盒子的下边
+//                就是小鸟的top值大于 game的高度-bird的高度
+                gameOver = true;//让游戏结束为true
+            }
+            if (bird.y < 0) {
+                bird.y = 0;//当小鸟的头部顶到盒子的上边
+//                就是小鸟的top值小于0时
+                gameOver = true;//让游戏结束为true
+            }
+            bird.Entity.style.top = bird.y + "px";//设置小鸟的top值 要先判断在进行赋值
+        }
+    }, 25);
+    document.onclick = function () {
+        bird.speedY = -10;//点击鼠标 让小鸟往上 因为往上top值在减小 所以给的值为赋值
+    }
+    document.onkeydown = function (event) {
+        if (event.keyCode === 87) {//W的键盘码为87
+            bird.speedY = -10;
+        }
+    };
+    function Pipe(positionX) {
+
+        this.x = positionX;//管道的left值为传进来的位置值
+        this.upPipeY = 0;
+        //上管道的top值为零
+        this.upPipeH = parseInt(Math.random() * 175 + 100);//随机生成上管道的高度
+        this.downPipeH = game.offsetHeight - this.upPipeH - 200;
+        //两个管子之间的间隔是相同的 所以下面的管子的高度等于game盒子的高度减去他们之间的间隔 再减去上管道的高度
+        this.downPipeY = game.offsetHeight - this.downPipeH;
+        //下面的盒子的top值就是game的高度减下面盒子的高度
+        console.log(this.upPipeH);
+        this.width = 52;//管道的宽为盒子的宽
+        var divUp = document.createElement("div");//动态创建管道的盒子
+        var divDown = document.createElement("div");//动态创建管道的盒子
+        divUp.className = "pipeU";
+        divDown.className = "pipeD";
+        divUp.style.height = this.upPipeH + "px";
+        divDown.style.height = this.downPipeH + "px";
+        divUp.style.top = this.upPipeY + "px";
+        divDown.style.top = this.downPipeY + "px";
+        divUp.style.left = this.x + "px";
+        divDown.style.left = this.x + "px";
+        divUp.style.width = this.width + "px";
+        divDown.style.width = this.width + "px";
+        game.appendChild(divUp);
+        game.appendChild(divDown);
+        var that = this;
+        setInterval(function () {
+            that.x = that.x - 1;
+            if (that.x < -52) {
+                //废物利用 如果盒子的left小于-52时就代表盒子走完了
+                that.x = 800;// 就将盒子的left改为800 让盒子从右面重新出来
+            }
+            //添加碰撞检测
+            //如果小鸟的左面碰到了管子的右面
+            //小鸟的右面碰到了管子的上面
+            //小鸟的上面碰到了上面管子的下面
+            //小鸟的下面碰到了下面管子的上面
+            var upCrach = (bird.x < that.x + that.width) && (bird.x + birdElem.offsetWidth > that.x) && (bird.y < that.upPipeH);
+            var downCrach = (bird.x < that.x + that.width) && (bird.x + birdElem.offsetWidth > that.x) && (bird.y + birdElem.offsetHeight > that.downPipeY);
+            if (upCrach || downCrach) {
+                gameOver = true;
+            }
+            if(!gameOver){//如果游戏没有结束才能开始游戏
+                divDown.style.left = that.x + "px";
+                divUp.style.left = that.x + "px";
+            }
+        }, 15)
+
+    }
+    //new Pipe(400);
+    //new Pipe(600);
+    //new Pipe(800);
+    //new Pipe(1000);
+    for (var i = 0; i < 4; i++) {
+        new Pipe(400 + i * 200);
+    }
+</script>
+</body>
+</html>

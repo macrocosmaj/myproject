@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		body{
+			background-color: skyblue;
+			perspective:500px;
+		}
+		.box{
+			width: 90px;
+			height: 90px;
+			position:relative;
+			margin:100px auto;
+			transform-style:preserve-3d;
+		}
+		@keyframes rotateBox{
+			0%{
+				transform:rotateX(0deg) rotateY(0deg);
+			}
+			/* 25%{
+				transform:rotateX(90deg) rotateY(90deg);
+			}
+			50%{
+				transform:rotateX(270deg) rotateY(270deg);
+			} */
+			100%{
+				transform:rotateX(360deg) rotateY(360deg);
+			}
+
+		}
+		.animate{
+			animation: rotateBox 0.2s 0s infinite linear forwards;
+		}
+		ul{
+			background-color: whitesmoke;
+			list-style: none;
+			padding: 0;
+			width: 90px;
+			height: 90px;
+			border: 1px solid gray;
+			float: left;
+			margin: 10px;
+			border-radius: 10px;
+			position:absolute;
+			border-radius: 5px;
+
+			/* 开启弹性布局 */
+			display: flex;
+		}
+		ul>li{
+			width: 20px;
+			height: 20px;
+			margin: 5px;
+			background-color: gray;
+			border-radius: 50%;
+		}
+		ul:nth-child(1){
+			display: flex;
+			justify-content:center;
+			align-items:center;
+			transform:rotateY(0deg) translateZ(45px);
+		}
+		ul:nth-child(2){
+			display: flex;
+			justify-content:space-between;
+			transform:rotateX(-90deg) translateZ(45px);
+			}
+		ul:nth-child(2) li:nth-child(2){
+				align-self:flex-end;
+		}
+		ul:nth-child(3){
+			display: flex;
+			justify-content:center;
+			transform:rotateY(-90deg) translateZ(45px);
+		}
+		ul:nth-child(3) li:nth-child(2){
+			align-self:center;
+		}
+		ul:nth-child(3) li:nth-child(3){
+			align-self:flex-end;
+		}
+		ul:nth-child(4){
+			display: flex;
+			flex-wrap:wrap;
+			justify-content:space-between;
+			align-content:space-between;
+			transform:rotateX(90deg) translateZ(45px);
+		}
+		ul:nth-child(4) li{
+			margin:10px;
+		}
+		ul:nth-child(5){
+			display: flex;
+			flex-wrap:wrap;
+			justify-content:space-between;
+			align-content:space-between;
+			transform:rotateY(90deg) translateZ(45px);
+		}
+		ul:nth-child(5) li{
+			margin:5px 10px;
+		}
+		ul:nth-child(5) li:nth-child(3){
+			margin:5px 35px;
+		}
+		ul:nth-child(6){
+			display: flex;
+			flex-wrap:wrap;
+			justify-content:space-between;
+			align-content:space-between;
+			transform:rotateY(180deg) translateZ(45px);
+		}
+		ul:nth-child(6) li{
+			margin: 5px 10px;
+		}
+	</style>
+	<script src="jquery-1.12.2.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){
+				var box = document.querySelector(".box");
+				document.querySelector("#btn1").onclick = function(){
+					var time = Math.ceil(Math.random()*3000);
+					if(!box.classList.contains("animate")){
+						box.classList.add('animate');
+					}else{
+						box.style.animationPlayState = "running";
+					}
+					setTimeout(function(){
+						kai();
+				    },time);
+
+				}
+				function kai(){
+					var deg1 = Math.ceil(Math.random()*4);
+					var deg2 = Math.ceil(Math.random()*4);
+					var deg3 = Math.ceil(Math.random()*2);
+					box.classList.remove("animate");
+					box.style.transform = "rotateX("+ (deg1*90) +"deg) rotateY("+ (deg2*90) +"deg) rotateZ("+ (deg3*180) +"deg)";
+					// $(box).css({
+					// 	"transform": "rotateY("+ ((Math.ceil(Math.random()*4))*90) +"deg) rotateX("+ ((Math.ceil(Math.random()*4))*90) +" deg)"
+					// })
+				}
+
+		};
+	</script>
+</head>
+<body>
+<input type="button" id="btn1" value="买定离手">
+	<div class="box">
+		<ul>
+			<li></li>
+		</ul>
+		<ul>
+			<li></li>
+			<li></li>
+		</ul>
+		<ul>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<ul>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<ul>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+		<ul>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+</body>
+</html>

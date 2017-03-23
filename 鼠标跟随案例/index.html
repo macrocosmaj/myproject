@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>鼠标跟随案例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<img src="img.jpg" alt="" width="50" height="50" id="pic"/>
+<script>
+    var pic = document.getElementById("pic");
+    var timer = null;
+    window.onmousemove = function (event) {
+        var event = event || window.event;
+        var pageX = event.pageX || event.clientX + document.documentElement.scrollLeft;
+        var pageY = event.pageY || event.clienty + document.documentElement.scrollTop;
+        clearInterval(timer);
+        timer = setInterval(function () {
+            var leaderX = pic.offsetLeft;
+            var leaderY = pic.offsetTop;
+            var targetX = pageX - pic.offsetWidth / 2;
+            var targetY = pageY - pic.offsetHeight / 2;
+            var stepX = (targetX - leaderX) / 10;
+            var stepY = (targetY - leaderY) / 10;
+            leaderX = leaderX + stepX;
+            leaderY = leaderY + stepY;
+            pic.style.top = leaderY + "px";
+            pic.style.left = leaderX + "px";
+            if (leaderX === targetX && leaderY === targetY) {
+                clearInterval(timer);
+            }
+        }, 1)
+    };
+</script>
+</body>
+</html>
